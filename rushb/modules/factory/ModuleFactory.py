@@ -25,6 +25,7 @@ class TestModuleFactoryDos(ModuleFactory):
 
 
 def make_module(type : str, **kwargs) -> IModuleInterface:
+    """ Create a module and assign parameters from the yml file """
     factories : dict[str,ModuleFactory] = {
         "TestModule" : TestModuleFactory(),
         "TestModuleDos" : TestModuleFactoryDos()
