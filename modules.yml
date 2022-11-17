@@ -1,0 +1,5 @@
+TestModule:
+  message: Hello World
+
+TestModuleDos:
+  message: Hello World Dos
