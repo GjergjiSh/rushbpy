@@ -6,18 +6,14 @@ logging.basicConfig(
     format="{asctime} {levelname:<8} {message}",
     style="{",
     filename="%slog" % __file__[:-2],
-    filemode="w"),
+    filemode="a"),
 
 def main():
-    cfg_path = "C:/Users/Gjergji/Repos/rushbpy/modules.ymlx"
+    cfg_path = "C:/Users/Gjergji/Repos/rushbpy/modules.yml"
     module_manager = ModuleManger(cfg_path)
     module_manager.init()
-    try:
-        #pass
-        module_manager.run()
-    except KeyboardInterrupt:
-        print("Exiting..")
-
+    module_manager.run()
+    module_manager.deinit()
 
 if __name__ == "__main__":
     main()
