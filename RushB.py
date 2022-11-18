@@ -1,8 +1,8 @@
-from rushb.modules.modulemanager.ModuleManager import *
-from rushb.modules.factory.ModuleFactory import *
+from rushb.modulemanager.ModuleManager import ModuleManger
 
 import argparse
 import os
+import logging
 
 if __name__ == "__main__":
     initialized = False
@@ -11,8 +11,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
     parser.add_argument(
-        "-loglvl",
-        metavar="--loglvl",
+        "-loglevel",
+        metavar="--loglevel",
         type=int,
         default=3,
         help="Loglevel [0,5]")
@@ -28,7 +28,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     logging.basicConfig(
-        level=args.loglvl * 10,
+        level=args.loglevel * 10,
         format="{asctime} {levelname:<8} {message}",
         style="{",
         filename="%slog" % __file__[:-2],

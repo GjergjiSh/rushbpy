@@ -1,17 +1,18 @@
-from rushb.modules.collection.IModuleInterface import *
+import logging
+
+from rushb.modules.RBModule import *
 
 
-class ServoReader(IModuleInterface):
+class ServoReader(RBModule):
     # ServoReader is a class that reads the servo values from the shared memory
     def __init__(self, **kwargs) -> None:
-        self.message: str = kwargs.get("message")
+        pass
 
     def init(self) -> None:
-        print("Initializing")
+        logging.info("Initializing ServoReader")
 
     def step(self) -> None:
-        print(self.shared_mem.servo_vals.values)
-        print(self.shared_mem.servo_vals.last_update)
+        logging.info(f"Servo values {self.shared_mem.servo_vals.values} {self.shared_mem.servo_vals.last_update}")
 
     def deinit(self) -> None:
-        print("Deinit")
+        logging.info("Deinitializing ServoReader")

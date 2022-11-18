@@ -1,40 +1,37 @@
-from rushb.modules.collection.IModuleInterface import IModuleInterface
+from rushb.modules.RBModule import RBModule
 from rushb.modules.collection.ServoWriter import ServoReader
 from rushb.modules.collection.ServoReader import ServoWriter
 
 from abc import ABC, abstractmethod
-import logging
 
 
 class ModuleFactory(ABC):
-    """ Base Factory that creates modules """
+    """ Base Factory class for creating modules """
     @abstractmethod
-    def create_module(self, **kwargs) -> IModuleInterface:
+    def create_module(self, **kwargs) -> RBModule:
         pass
 
 
-class TestModuleFactory(ModuleFactory):
-    def create_module(self, **kwargs) -> IModuleInterface:
-        """ Creates a test module """
+class ServoReaderFactory(ModuleFactory):
+    def create_module(self, **kwargs) -> RBModule:
+        """ Create a ServoReader module """
         return ServoReader(**kwargs)
 
 
-class TestModuleFactoryDos(ModuleFactory):
-    def create_module(self, **kwargs) -> IModuleInterface:
-        """ Creates a test module dos  """
+class ServoWriterFactory(ModuleFactory):
+    def create_module(self, **kwargs) -> RBModule:
+        """ Create a ServoWriter module """
         return ServoWriter(**kwargs)
 
 
-def make_module(type: str, **kwargs) -> IModuleInterface:
-    """ Create a module and assign parameters from the yml file """
+def make_module(module_type: str, **kwargs) -> RBModule:
+    """ Cre a module based on the module type and assign parameters """
     factories: dict[str, ModuleFactory] = {
-        "ServoReader": TestModuleFactory(),
-        "ServoWriter": TestModuleFactoryDos()
+        "ServoReader": ServoReaderFactory(),
+        "ServoWriter": ServoWriterFactory()
     }
 
-    if type in factories:
-        return factories[type].create_module(**kwargs)
+    if module_type in factories:
+        return factories[module_type].create_module(**kwargs)
     else:
-        msg = "Unsupported module type"
-        logging.critical(msg)
-        raise ValueError(msg)
+        raise ValueError("Unsupported module type")

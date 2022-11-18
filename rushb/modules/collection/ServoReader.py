@@ -1,8 +1,11 @@
-from rushb.modules.collection.IModuleInterface import *
+import logging
+
+from rushb.modules.RBModule import *
 import datetime
 
 
-class ServoWriter(IModuleInterface):
+class ServoWriter(RBModule):
+    # Updates the servo values in the shared memory
     def __init__(self, **kwargs) -> None:
 
         self.left_val: int = kwargs.get("left_val")
@@ -10,7 +13,7 @@ class ServoWriter(IModuleInterface):
         self.top_val: int = kwargs.get("top_val")
 
     def init(self) -> None:
-        print("Initializing")
+        logging.info("Initializing ServoWriter")
 
     def step(self) -> None:
         self.shared_mem.servo_vals.values[0] = self.left_val
@@ -19,4 +22,4 @@ class ServoWriter(IModuleInterface):
         self.shared_mem.servo_vals.last_update = datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")
 
     def deinit(self) -> None:
-        print("Deinit")
+        logging.info("Deinitializing ServoWriter")

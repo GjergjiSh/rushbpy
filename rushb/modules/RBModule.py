@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 from rushb.sharedmem.SharedMem import SharedMem
 
 
-class IModuleInterface(ABC):
+class RBModule(ABC):
     shared_mem = SharedMem()
 
     @abstractmethod
