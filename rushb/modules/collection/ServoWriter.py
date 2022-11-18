@@ -1,18 +1,25 @@
 import logging
 
 from rushb.modules.RBModule import *
+import datetime
 
 
-class ServoReader(RBModule):
-    # ServoReader is a class that reads the servo values from the shared memory
+class ServoWriter(RBModule):
+    # Updates the servo values in the shared memory
     def __init__(self, **kwargs) -> None:
-        pass
+
+        self.left_val: int = kwargs.get("left_val")
+        self.right_val: int = kwargs.get("right_val")
+        self.top_val: int = kwargs.get("top_val")
 
     def init(self) -> None:
-        logging.info("Initializing ServoReader")
+        logging.info("Initializing ServoWriter")
 
     def step(self) -> None:
-        logging.info(f"Servo values {self.shared_mem.servo_vals.values} {self.shared_mem.servo_vals.last_update}")
+        self.shared_mem.servo_vals.values[0] = self.left_val
+        self.shared_mem.servo_vals.values[1] = self.right_val
+        self.shared_mem.servo_vals.values[2] = self.top_val
+        self.shared_mem.servo_vals.last_update = datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")
 
     def deinit(self) -> None:
-        logging.info("Deinitializing ServoReader")
+        logging.info("Deinitializing ServoWriter")
