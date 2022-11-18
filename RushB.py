@@ -27,14 +27,17 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
+    filename = "%slog" % __file__[:-2]
+    log_format = "{asctime} {levelname:<8} {message}"
     logging.basicConfig(
         level=args.loglevel * 10,
-        format="{asctime} {levelname:<8} {message}",
+        format=log_format,
         style="{",
-        filename="%slog" % __file__[:-2],
-        filemode="a"),
-
-    logging.getLogger().addHandler(logging.StreamHandler())
+        handlers=[
+            logging.FileHandler(filename),
+            logging.StreamHandler()
+        ]
+    ),
 
     cfg_path = args.cfg
     module_manager = ModuleManger(cfg_path)
