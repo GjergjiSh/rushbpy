@@ -1,5 +1,7 @@
-TestModule:
-  message: Hello World
+ServoWriter:
+  left_val: 1
+  right_val: 2
+  top_val: 3
 
-TestModuleDos:
-  message: Hello World Dos
+ServoReader:
+  message: reading servos

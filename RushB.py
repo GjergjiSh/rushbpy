@@ -17,7 +17,7 @@ if __name__ == "__main__":
         default=3,
         help="Loglevel [0,5]")
 
-    default_cfg_file = os.path.join(os.getcwd(),"modules.yml")
+    default_cfg_file = os.path.join(os.getcwd(), "modules.yml")
     parser.add_argument(
         "-cfg",
         metavar="--cfg",
@@ -28,11 +28,11 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     logging.basicConfig(
-    level=args.loglvl * 10,
-    format="{asctime} {levelname:<8} {message}",
-    style="{",
-    filename="%slog" % __file__[:-2],
-    filemode="a"),
+        level=args.loglvl * 10,
+        format="{asctime} {levelname:<8} {message}",
+        style="{",
+        filename="%slog" % __file__[:-2],
+        filemode="a"),
 
     logging.getLogger().addHandler(logging.StreamHandler())
 

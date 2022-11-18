@@ -1,7 +1,8 @@
 from rushb.modules.collection.IModuleInterface import *
 
 
-class TestModuleDos(IModuleInterface):
+class ServoReader(IModuleInterface):
+    # ServoReader is a class that reads the servo values from the shared memory
     def __init__(self, **kwargs) -> None:
         self.message: str = kwargs.get("message")
 
@@ -9,7 +10,8 @@ class TestModuleDos(IModuleInterface):
         print("Initializing")
 
     def step(self) -> None:
-        print(f"Stepping {self.message}")
+        print(self.shared_mem.servo_vals.values)
+        print(self.shared_mem.servo_vals.last_update)
 
     def deinit(self) -> None:
         print("Deinit")

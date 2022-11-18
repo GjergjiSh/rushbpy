@@ -1,6 +1,6 @@
 from rushb.modules.collection.IModuleInterface import IModuleInterface
-from rushb.modules.collection.TestModule import TestModule
-from rushb.modules.collection.TestModuleDos import TestModuleDos
+from rushb.modules.collection.ServoWriter import ServoReader
+from rushb.modules.collection.ServoReader import ServoWriter
 
 from abc import ABC, abstractmethod
 import logging
@@ -16,20 +16,20 @@ class ModuleFactory(ABC):
 class TestModuleFactory(ModuleFactory):
     def create_module(self, **kwargs) -> IModuleInterface:
         """ Creates a test module """
-        return TestModule(**kwargs)
+        return ServoReader(**kwargs)
 
 
 class TestModuleFactoryDos(ModuleFactory):
     def create_module(self, **kwargs) -> IModuleInterface:
         """ Creates a test module dos  """
-        return TestModuleDos(**kwargs)
+        return ServoWriter(**kwargs)
 
 
 def make_module(type: str, **kwargs) -> IModuleInterface:
     """ Create a module and assign parameters from the yml file """
     factories: dict[str, ModuleFactory] = {
-        "TestModule": TestModuleFactory(),
-        "TestModuleDos": TestModuleFactoryDos()
+        "ServoReader": TestModuleFactory(),
+        "ServoWriter": TestModuleFactoryDos()
     }
 
     if type in factories:

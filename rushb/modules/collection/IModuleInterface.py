@@ -1,7 +1,11 @@
 from abc import ABC, abstractmethod
 
+from rushb.sharedmem.SharedMem import SharedMem
+
 
 class IModuleInterface(ABC):
+    shared_mem = SharedMem()
+
     @abstractmethod
     def init(self) -> None:
         raise NotImplementedError()
