@@ -3,7 +3,7 @@ from rushb.modules.collection.TestModule import TestModule
 from rushb.modules.collection.TestModuleDos import TestModuleDos
 
 from abc import ABC, abstractmethod
-
+import logging
 
 class ModuleFactory(ABC):
     """ Base Factory that creates modules """
@@ -34,6 +34,8 @@ def make_module(type : str, **kwargs) -> IModuleInterface:
     if type in factories:
         return factories[type].create_module(**kwargs)
     else:
-        raise RuntimeError("Unsupported module type")
+        msg = "Unsupported module type"
+        logging.critical(msg)
+        raise ValueError(msg)
 
 
