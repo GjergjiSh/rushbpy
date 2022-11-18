@@ -1,7 +1,15 @@
-ServoWriter:
-  left_val: 1
-  right_val: 2
-  top_val: 3
+#ServoWriter:
+#  left_val: 1
+#  right_val: 2
+#  top_val: 3
+#
+#ServoReader:
+#  message: reading servos
 
-ServoReader:
-  message: reading servos
+KeyboardControls:
+  up: w
+  down: s
+  left: a
+  right: d
+  x_speed: 10
+  y_speed: 10

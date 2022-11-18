@@ -1,12 +1,14 @@
 from rushb.modules.RBModule import RBModule
 from rushb.modules.collection.ServoWriter import ServoReader
 from rushb.modules.collection.ServoReader import ServoWriter
+from rushb.modules.collection.KeyboardControls import KeyboardControls
 
 from abc import ABC, abstractmethod
 
 
 class ModuleFactory(ABC):
     """ Base Factory class for creating modules """
+
     @abstractmethod
     def create_module(self, **kwargs) -> RBModule:
         pass
@@ -24,11 +26,18 @@ class ServoWriterFactory(ModuleFactory):
         return ServoWriter(**kwargs)
 
 
+class KeyboardControlFactory(ModuleFactory):
+    def create_module(self, **kwargs) -> RBModule:
+        """ Create a KeyboardControl module """
+        return KeyboardControls(**kwargs)
+
+
 def make_module(module_type: str, **kwargs) -> RBModule:
     """ Cre a module based on the module type and assign parameters """
     factories: dict[str, ModuleFactory] = {
         "ServoReader": ServoReaderFactory(),
-        "ServoWriter": ServoWriterFactory()
+        "ServoWriter": ServoWriterFactory(),
+        "KeyboardControls": KeyboardControlFactory(),
     }
 
     if module_type in factories:
