@@ -1,6 +1,6 @@
 from rushb.modules.RBModule import RBModule
-from rushb.modules.collection.ServoWriter import ServoReader
-from rushb.modules.collection.ServoReader import ServoWriter
+from rushb.modules.collection.ServoReader import ServoReader
+from rushb.modules.collection.ServoWriter import ServoWriter
 from rushb.modules.collection.KeyboardControls import KeyboardControls
 
 from abc import ABC, abstractmethod
