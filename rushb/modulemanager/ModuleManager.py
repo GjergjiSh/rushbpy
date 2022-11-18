@@ -50,12 +50,14 @@ class ModuleManger:
     def __read_config(self):
         """ Read the module parameters from the configuration file """
         with open(self.cfg_path, "r") as stream:
+            logging.info("Reading configuration file")
             yaml_file = yaml.safe_load(stream)
             return yaml_file
 
     def __assign_modules(self, config: dict):
         """ Assign a module to the manager """
         for module_name in config:
+            logging.info(f"Assigning module {module_name}")
             module = make_module(module_name,**config[module_name])
             self.modules.append(module)
 
