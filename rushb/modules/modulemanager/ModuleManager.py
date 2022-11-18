@@ -4,6 +4,7 @@ from rushb.modules.factory.ModuleFactory import make_module
 import yaml
 import logging
 
+
 class ModuleManger():
 	def __init__(self, cfg_path: str) -> None:
 		self.modules: list[IModuleInterface] = []
@@ -22,7 +23,6 @@ class ModuleManger():
 
 		return True
 
-
 	def deinit(self) -> bool:
 		""" Deinitialize all the assigned modules """
 		try:
@@ -33,7 +33,6 @@ class ModuleManger():
 			return False
 
 		return True
-
 
 	def run(self) -> bool:
 		""" Start processing the modules in a loop """
@@ -57,12 +56,10 @@ class ModuleManger():
 		""" Assign a module to the manager """
 		for module_name in config:
 			module = make_module(module_name,
-							**config[module_name])
+						**config[module_name])
 			self.modules.append(module)
-
 
 	def __step(self) -> None:
 		""" Trigger the step function of all the assigned modules """
 		for module in self.modules:
 			module.step()
-

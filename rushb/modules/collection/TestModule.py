@@ -3,7 +3,7 @@ from rushb.modules.collection.IModuleInterface import *
 
 class TestModule(IModuleInterface):
     def __init__(self, **kwargs) -> None:
-        self.message : str = kwargs.get("message")
+        self.message: str = kwargs.get("message")
 
     def init(self) -> None:
         print("Initializing")

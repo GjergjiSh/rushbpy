@@ -5,6 +5,7 @@ from rushb.modules.collection.TestModuleDos import TestModuleDos
 from abc import ABC, abstractmethod
 import logging
 
+
 class ModuleFactory(ABC):
     """ Base Factory that creates modules """
     @abstractmethod
@@ -24,11 +25,11 @@ class TestModuleFactoryDos(ModuleFactory):
         return TestModuleDos(**kwargs)
 
 
-def make_module(type : str, **kwargs) -> IModuleInterface:
+def make_module(type: str, **kwargs) -> IModuleInterface:
     """ Create a module and assign parameters from the yml file """
-    factories : dict[str,ModuleFactory] = {
-        "TestModule" : TestModuleFactory(),
-        "TestModuleDos" : TestModuleFactoryDos()
+    factories: dict[str, ModuleFactory] = {
+        "TestModule": TestModuleFactory(),
+        "TestModuleDos": TestModuleFactoryDos()
     }
 
     if type in factories:
@@ -37,5 +38,3 @@ def make_module(type : str, **kwargs) -> IModuleInterface:
         msg = "Unsupported module type"
         logging.critical(msg)
         raise ValueError(msg)
-
-
