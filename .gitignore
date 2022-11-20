@@ -5,3 +5,4 @@ venv-*
 rushb.egg-info
 dist
 build
+pretrained_models

@@ -7,7 +7,6 @@ import datetime
 class ServoWriter(RBModule):
     # Updates the servo values in the shared memory
     def __init__(self, **kwargs) -> None:
-
         self.left_val: int = kwargs.get("left_val")
         self.right_val: int = kwargs.get("right_val")
         self.top_val: int = kwargs.get("top_val")

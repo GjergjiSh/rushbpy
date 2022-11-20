@@ -21,7 +21,7 @@ setup(
     long_description_content_type="text/markdown",
     long_description=long_description,
     packages=find_packages(),
-    install_requires=['keyboard'],
+    install_requires=['keyboard', 'opencv-python', 'tensorflow-gpu', 'pillow', 'zmq', 'PyYAML', 'pygame'],
     keywords=['python', 'robotics', 'arduino', 'rasberry pi', 'computer vision', 'ai'],
     classifiers=[
         "Programming Language :: Python :: 3"
