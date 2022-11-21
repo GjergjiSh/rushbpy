@@ -65,14 +65,12 @@ class ModuleManger:
         try:
             for module in config["Modules"]:
                 # Get the module name to pass to the factory
-                module_name = module["name"]
-                # Remove the name from the dictionary to pass the
-                # rest of the parameters to the module factory
-                del module["name"]
-                # Create and assign the module
-                logging.info(f"Assigning module {module_name}")
-                module = make_module(module_name, **module)
-                self.modules.append(module)
+                if module["active"]:
+                    module_name = module["name"]
+                    # Create and assign the module
+                    logging.info(f"Assigning module {module_name}")
+                    module = make_module(module_name, **module)
+                    self.modules.append(module)
         except RuntimeError:
             logging.critical("Module assignment failed", exc_info=True)
 

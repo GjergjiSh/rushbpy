@@ -6,9 +6,9 @@ from rushb.sharedmem.SharedMem import *
 
 
 class ConnectionType(Enum):
+    PUBSUB = "PUBSUB"
     PUB = "PUB"
     SUB = "SUB"
-    PUBSUB = "PUBSUB"
 
 
 class Connection:

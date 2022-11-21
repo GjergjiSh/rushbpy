@@ -1,46 +1,51 @@
 
 Connection:
-  pub_port: "5555"
-
-  sub_port: "5556"
-  sub_host: "localhost"
-
   # connection_type: PUB, SUB, PUBSUB
-  connection_type: "PUB"
+  connection_type: PUB
+  pub_port: 5555
+  sub_port: 5556
+  sub_host: localhost
 
 Modules:
   - name: ServoWriter
+    active: true
     left_val: 1
     right_val: 2
     top_val: 3
 
   - name: ServoReader
+    active: true
 
-#  - name: KeyboardControls
-#    up: w
-#    down: s
-#    left: a
-#    right: d
-#    x_speed: 0.01
-#    y_speed: 0.01
-#
-#  - name: JoyStickControls
-#    joystick_id : 0
-#
-#  - name: VideoCapture
-#    camera_id : 0
-#
-#  - name: ObjectDetector
-#    model_url: "http://download.tensorflow.org/models/object_detection/tf2/20200711/ssd_mobilenet_v2_fpnlite_320x320_coco17_tpu-8.tar.gz"
-#    labels_path: "E:/Repos/Steinbeis/AI/Detection-Models/coco.names"
-#    cache_dir: "./pretrained_models"
-#    iou_threshold: 0.5
-#    confidence_threshold: 0.5
-#    max_detections: 50
-#
-#  - name: VideoViewer
-#    height: 480
-#    width : 640
+  - name: KeyboardControls
+    active: true
+    up: w
+    down: s
+    left: a
+    right: d
+    x_speed: 0.01
+    y_speed: 0.01
+
+  - name: JoyStickControls
+    active: false
+    joystick_id : 0
+
+  - name: VideoCapture
+    active: false
+    camera_id : 0
+
+  - name: ObjectDetector
+    active: false
+    model_url: "http://download.tensorflow.org/models/object_detection/tf2/20200711/ssd_mobilenet_v2_fpnlite_320x320_coco17_tpu-8.tar.gz"
+    labels_path: "E:/Repos/Steinbeis/AI/Detection-Models/coco.names"
+    cache_dir: "./pretrained_models"
+    iou_threshold: 0.5
+    confidence_threshold: 0.5
+    max_detections: 50
+
+  - name: VideoViewer
+    active: false
+    height: 480
+    width : 640
 
 
 
