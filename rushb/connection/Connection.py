@@ -24,6 +24,66 @@ class Connection:
         self.publisher: zmq.Socket = None
         self.subscriber: zmq.Socket = None
 
+    def init(self):
+        """Initialize the connection"""
+        # Check if the connection type is not None
+        if self.connection_type is None:
+            raise ValueError("The connection_type cannot be None")
+
+        # Init the context
+        try:
+            self.context = zmq.Context()
+        except zmq.error.ZMQError as e:
+            logging.error(f"Could not init context: {e}")
+            raise e
+
+        # Init the publisher and subscriber sockets
+        # depending on the connection type
+        logging.info(f"Initializing connection of type {self.connection_type}")
+        if self.connection_type == ConnectionType.PUB:
+            self.__init_pub()
+        elif self.connection_type == ConnectionType.SUB:
+            self.__init_sub()
+        elif self.connection_type == ConnectionType.PUBSUB:
+            self.__init_pub()
+            self.__init_sub()
+        else:
+            raise ValueError(f"Unknown connection type: {self.connection_type}")
+
+    def send(self, shared_mem: SharedMem):
+        """Send the shared memory to the remote subscriber"""
+        try:
+            self.publisher.send_pyobj(shared_mem)
+        except zmq.error.ZMQError as e:
+            logging.error(f"Could not send shared memory: {e}")
+            raise e
+
+    def recv(self) -> SharedMem:
+        """Receive the shared memory from the remote publisher"""
+        try:
+            shared_mem = self.subscriber.recv_pyobj()
+            return shared_mem
+        except zmq.error.ZMQError as e:
+            logging.error(f"Could not receive shared memory: {e}")
+            raise e
+
+    def deinit(self):
+        try:
+            # Check if the publisher socket is initialized and close it
+            if self.publisher is not None:
+                self.publisher.close()
+
+            # Check if the subscriber socket is initialized and close it
+            if self.subscriber is not None:
+                self.subscriber.close()
+
+            # Check if the context is initialized and destroy it
+            if self.context is not None:
+                self.context.destroy()
+        except zmq.error.ZMQError as e:
+            logging.error(f"Could not deinit connection: {e}")
+            raise e
+
     def __init_pub(self):
         # Check if the port is not None
         if self.pub_port is None:
@@ -57,63 +117,4 @@ class Connection:
             logging.info(f"Subscriber connected to {end_point}")
         except zmq.error.ZMQError as e:
             logging.error(f"Could not connect to {end_point}: {e}")
-            raise e
-
-    def init(self):
-        # Check if the connection type is not None
-        if self.connection_type is None:
-            raise ValueError("The connection_type cannot be None")
-
-        # Init the context
-        try:
-            self.context = zmq.Context()
-        except zmq.error.ZMQError as e:
-            logging.error(f"Could not init context: {e}")
-            raise e
-
-        # Init the publisher and subscriber sockets
-        # depending on the connection type
-        logging.info(f"Initializing connection of type {self.connection_type}")
-        if self.connection_type == ConnectionType.PUB:
-            self.__init_pub()
-        elif self.connection_type == ConnectionType.SUB:
-            self.__init_sub()
-        elif self.connection_type == ConnectionType.PUBSUB:
-            self.__init_pub()
-            self.__init_sub()
-        else:
-            raise ValueError(f"Unknown connection type: {self.connection_type}")
-
-    def send(self, shared_mem: SharedMem):
-        # Try to send the shared memory to the remote subscriber
-        try:
-            self.publisher.send_pyobj(shared_mem)
-        except zmq.error.ZMQError as e:
-            logging.error(f"Could not send shared memory: {e}")
-            raise e
-
-    def recv(self) -> SharedMem:
-        # Receive the shared memory from the remote publisher
-        try:
-            shared_mem = self.subscriber.recv_pyobj()
-            return shared_mem
-        except zmq.error.ZMQError as e:
-            logging.error(f"Could not receive shared memory: {e}")
-            raise e
-
-    def deinit_connection(self):
-        try:
-            # Check if the publisher socket is initialized and close it
-            if self.publisher is not None:
-                self.publisher.close()
-
-            # Check if the subscriber socket is initialized and close it
-            if self.subscriber is not None:
-                self.subscriber.close()
-
-            # Check if the context is initialized and destroy it
-            if self.context is not None:
-                self.context.destroy()
-        except zmq.error.ZMQError as e:
-            logging.error(f"Could not deinit connection: {e}")
             raise e
