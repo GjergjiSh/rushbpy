@@ -1,52 +1,75 @@
 import zmq
 import logging
 
+from enum import Enum
 from rushb.sharedmem.SharedMem import *
 
 
-class Publisher:
-    """Publisher is a class that publishes the data in the shared memory to a ZMQ socket"""
+class ConnectionType(Enum):
+    PUB = "PUB"
+    SUB = "SUB"
+    PUBSUB = "PUBSUB"
 
-    def __init__(self, **kwargs) -> None:
-        self.context = None
-        self.socket = None
-        self.port = kwargs.get("port")
-        self.host = kwargs.get("host")
 
-    def init(self) -> None:
-        logging.info("Initializing Publisher")
+class Connection:
+    def __init__(self, **kwargs):
+        self.connection_type: ConnectionType = ConnectionType[kwargs.get("connection_type")]
+        self.pub_port: str = kwargs.get("pub_port")
+        self.sub_port: str = kwargs.get("sub_port")
+        self.sub_host: str = kwargs.get("sub_host")
+
+        # Connection objects are not initialized until
+        # the init_connection method is called
+        self.context: zmq.Context = None
+        self.publisher: zmq.Socket = None
+        self.subscriber: zmq.Socket = None
+
+    def __init_pub(self):
+        # Init the publisher socket
+        end_point = f"tcp://*:{self.pub_port}"
+        self.publisher = self.context.socket(zmq.PUB)
+        self.publisher.bind(end_point)
+        logging.info(f"Publisher bound to {end_point}")
+
+    def __init_sub(self):
+        # Init the subscriber socket
+        end_point = f"tcp://{self.sub_host}:{self.sub_port}"
+        self.subscriber = self.context.socket(zmq.SUB)
+        self.subscriber.connect(end_point)
+        # Subscribe to all messages
+        self.subscriber.setsockopt_string(zmq.SUBSCRIBE, "")
+        logging.info(f"Subscriber connected to {end_point}")
+
+    def init(self):
+        # Init the context and the sockets based on the connection type
         self.context = zmq.Context()
-        self.socket = self.context.socket(zmq.PUB)
-        self.socket.bind(f"tcp://*:{self.port}")
+        if self.connection_type == ConnectionType.PUB:
+            self.__init_pub()
+        elif self.connection_type == ConnectionType.SUB:
+            self.__init_sub()
+        elif self.connection_type == ConnectionType.PUBSUB:
+            self.__init_pub()
+            self.__init_sub()
+        else:
+            raise ValueError(f"Unknown connection type: {self.connection_type}")
 
-    def send(self, shared_mem: SharedMem) -> None:
-        self.socket.send_pyobj(shared_mem)
+    def send(self, shared_mem: SharedMem):
+        # Try to send the shared memory to the remote subscriber
+        self.publisher.send_pyobj(shared_mem)
 
-    def deinit(self) -> None:
-        logging.info("Deinitializing Publisher")
-        self.socket.close()
-        self.context.destroy()
+    def recv(self) -> SharedMem:
+        # Receive the shared memory from the remote publisher
+        return self.subscriber.recv_pyobj()
 
+    def deinit_connection(self):
+        # Check if the publisher socket is initialized and close it
+        if self.publisher is not None:
+            self.publisher.close()
 
-class Subscriber:
-    """Subscriber is a class that subscribes to a ZMQ socket and writes the data to the shared memory"""
+        # Check if the subscriber socket is initialized and close it
+        if self.subscriber is not None:
+            self.subscriber.close()
 
-    def __init__(self, **kwargs) -> None:
-        self.context = None
-        self.socket = None
-        self.port = kwargs.get("port")
-        self.host = kwargs.get("host")
-
-    def init(self) -> None:
-        logging.info("Initializing Subscriber")
-        self.context = zmq.Context()
-        self.socket = self.context.socket(zmq.SUB)
-        self.socket.connect(f"tcp://localhost:{self.port}")
-        self.socket.setsockopt_string(zmq.SUBSCRIBE, "")
-
-    def recv(self) -> None:
-        return self.socket.recv_pyobj()
-
-    def deinit(self) -> None:
-        logging.info("Deinitializing Subscriber")
-        self.socket.close()
+        # Check if the context is initialized and destroy it
+        if self.context is not None:
+            self.context.destroy()
