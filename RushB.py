@@ -5,9 +5,6 @@ import os
 import logging
 
 if __name__ == "__main__":
-    initialized = False
-    finished = False
-    deinitialized = False
     parser = argparse.ArgumentParser()
 
     parser.add_argument(
@@ -39,12 +36,7 @@ if __name__ == "__main__":
         ]
     ),
 
-    cfg_path = args.cfg
-    module_manager = ModuleManger(cfg_path)
-    initialized = module_manager.init()
-
-    if initialized:
-        finished = module_manager.run()
-
-    if finished:
-        deinitialized = module_manager.deinit()
+    module_manager = ModuleManger(args.cfg)
+    module_manager.init()
+    module_manager.run()
+    module_manager.deinit()

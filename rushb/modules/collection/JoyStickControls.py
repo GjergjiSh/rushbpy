@@ -1,10 +1,12 @@
 import logging
-import pygame
 from numpy import interp
 import datetime
+from os import environ
 
 from rushb.modules.RBModule import *
 
+environ['PYGAME_HIDE_SUPPORT_PROMPT'] = '1'
+import pygame
 
 class JoyStickControls(RBModule):
     def __init__(self, **kwargs) -> None:
@@ -14,12 +16,19 @@ class JoyStickControls(RBModule):
         self.left_stick = 0
 
     def init(self) -> None:
+        # Check if the joystick id is not None
+        if self.joystick_id is None:
+            raise ValueError("The joystick_id cannot be None")
+
         # Initialize pygame and the joystick module
         logging.info("Initializing JoyStickControls")
         pygame.init()
         pygame.joystick.init()
-        self.joystick = pygame.joystick.Joystick(self.joystick_id)
-        self.joystick.init()
+        try:
+            self.joystick = pygame.joystick.Joystick(self.joystick_id)
+            self.joystick.init()
+        except pygame.error:
+            raise RuntimeError("Could not initialize joystick")
 
     def step(self) -> None:
         self.__get_gamepad_input()
@@ -30,12 +39,19 @@ class JoyStickControls(RBModule):
     def deinit(self) -> None:
         # Release the joystick and pygame
         logging.info("Deinitializing JoyStickControls")
-        pygame.joystick.quit()
-        pygame.quit()
+        try:
+            pygame.joystick.quit()
+            pygame.quit()
+        except pygame.error:
+            raise RuntimeError("Could not deinitialize joystick")
 
     def __get_gamepad_input(self) -> None:
         # Read the event queue
-        pygame.event.get()
+        try:
+            pygame.event.get()
+        except pygame.error:
+            raise RuntimeError("Could not read event queue")
+
         # Get the vertical positions of the left and right joysticks
         self.left_stick = -1 * round(self.joystick.get_axis(1), 1)
         self.right_stick = -1 * round(self.joystick.get_axis(3), 1)

@@ -23,6 +23,14 @@ class KeyboardControls(RBModule):
         self.left_track = 90
 
     def init(self) -> None:
+        # Check if any of the button mappings is None
+        if None in self.button_mapping.values():
+            raise ValueError("The button mappings cannot be None")
+
+        # Check if the x_speed and y_speed are not None
+        if self.x_speed is None or self.y_speed is None:
+            raise ValueError("The x_speed and y_speed cannot be None")
+
         # Log the button mapping and the x and y speed
         logging.info("Initializing KeyboardControls")
         logging.info(f"KeyboardControls x speed: {self.x_speed} y speed: {self.y_speed}")

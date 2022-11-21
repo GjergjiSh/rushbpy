@@ -6,7 +6,7 @@ Connection:
   sub_host: "localhost"
 
   # connection_type: PUB, SUB, PUBSUB
-  connection_type: "SUB"
+  connection_type: "PUB"
 
 Modules:
   - name: ServoWriter
@@ -15,7 +15,6 @@ Modules:
     top_val: 3
 
   - name: ServoReader
-    pass : 0
 
 #  - name: KeyboardControls
 #    up: w

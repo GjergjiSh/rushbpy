@@ -25,24 +25,55 @@ class Connection:
         self.subscriber: zmq.Socket = None
 
     def __init_pub(self):
+        # Check if the port is not None
+        if self.pub_port is None:
+            raise ValueError("The pub_port cannot be None")
+
         # Init the publisher socket
         end_point = f"tcp://*:{self.pub_port}"
-        self.publisher = self.context.socket(zmq.PUB)
-        self.publisher.bind(end_point)
-        logging.info(f"Publisher bound to {end_point}")
+        try:
+            self.publisher = self.context.socket(zmq.PUB)
+            self.publisher.bind(end_point)
+            logging.info(f"Publisher bound to {end_point}")
+        except zmq.error.ZMQError as e:
+            logging.error(f"Could not bind the publisher to {end_point}: {e}")
+            raise e
 
     def __init_sub(self):
+        # Check if the port and host are not None
+        if self.sub_port is None:
+            raise ValueError("The sub_port cannot be None")
+        if self.sub_host is None:
+            raise ValueError("The sub_host cannot be None")
+
         # Init the subscriber socket
         end_point = f"tcp://{self.sub_host}:{self.sub_port}"
-        self.subscriber = self.context.socket(zmq.SUB)
-        self.subscriber.connect(end_point)
-        # Subscribe to all messages
-        self.subscriber.setsockopt_string(zmq.SUBSCRIBE, "")
-        logging.info(f"Subscriber connected to {end_point}")
+
+        try:
+            self.subscriber = self.context.socket(zmq.SUB)
+            self.subscriber.connect(end_point)
+            # Subscribe to all messages
+            self.subscriber.setsockopt_string(zmq.SUBSCRIBE, "")
+            logging.info(f"Subscriber connected to {end_point}")
+        except zmq.error.ZMQError as e:
+            logging.error(f"Could not connect to {end_point}: {e}")
+            raise e
 
     def init(self):
-        # Init the context and the sockets based on the connection type
-        self.context = zmq.Context()
+        # Check if the connection type is not None
+        if self.connection_type is None:
+            raise ValueError("The connection_type cannot be None")
+
+        # Init the context
+        try:
+            self.context = zmq.Context()
+        except zmq.error.ZMQError as e:
+            logging.error(f"Could not init context: {e}")
+            raise e
+
+        # Init the publisher and subscriber sockets
+        # depending on the connection type
+        logging.info(f"Initializing connection of type {self.connection_type}")
         if self.connection_type == ConnectionType.PUB:
             self.__init_pub()
         elif self.connection_type == ConnectionType.SUB:
@@ -55,21 +86,34 @@ class Connection:
 
     def send(self, shared_mem: SharedMem):
         # Try to send the shared memory to the remote subscriber
-        self.publisher.send_pyobj(shared_mem)
+        try:
+            self.publisher.send_pyobj(shared_mem)
+        except zmq.error.ZMQError as e:
+            logging.error(f"Could not send shared memory: {e}")
+            raise e
 
     def recv(self) -> SharedMem:
         # Receive the shared memory from the remote publisher
-        return self.subscriber.recv_pyobj()
+        try:
+            shared_mem = self.subscriber.recv_pyobj()
+            return shared_mem
+        except zmq.error.ZMQError as e:
+            logging.error(f"Could not receive shared memory: {e}")
+            raise e
 
     def deinit_connection(self):
-        # Check if the publisher socket is initialized and close it
-        if self.publisher is not None:
-            self.publisher.close()
+        try:
+            # Check if the publisher socket is initialized and close it
+            if self.publisher is not None:
+                self.publisher.close()
 
-        # Check if the subscriber socket is initialized and close it
-        if self.subscriber is not None:
-            self.subscriber.close()
+            # Check if the subscriber socket is initialized and close it
+            if self.subscriber is not None:
+                self.subscriber.close()
 
-        # Check if the context is initialized and destroy it
-        if self.context is not None:
-            self.context.destroy()
+            # Check if the context is initialized and destroy it
+            if self.context is not None:
+                self.context.destroy()
+        except zmq.error.ZMQError as e:
+            logging.error(f"Could not deinit connection: {e}")
+            raise e

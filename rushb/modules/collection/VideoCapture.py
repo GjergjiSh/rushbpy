@@ -14,7 +14,16 @@ class VideoCapture(RBModule):
     def init(self) -> None:
         # Initialize the video capture
         logging.info("Initializing VideoCapture")
-        self.video_capture = cv2.VideoCapture(self.camera_id)
+
+        # Check if the camera id is not None
+        if self.camera_id is None:
+            raise ValueError("The camera_id cannot be None")
+
+        try:
+            self.video_capture = cv2.VideoCapture(self.camera_id)
+        except Exception as e:
+            logging.error(f"Error while initializing the video capture: {e}")
+            raise e
 
     def step(self) -> None:
         """Writes the video frame to the shared memory"""
@@ -27,4 +36,8 @@ class VideoCapture(RBModule):
     def deinit(self) -> None:
         # Release the video capture
         logging.info("Deinitializing VideoCapture")
-        self.video_capture.release()
+        try:
+            self.video_capture.release()
+        except Exception as e:
+            logging.error(f"Error while deinitializing the video capture: {e}")
+            raise e
