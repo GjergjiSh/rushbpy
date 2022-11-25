@@ -3,6 +3,8 @@ import logging
 from rushb.modules.RBModule import *
 import datetime
 
+from rushb.sharedmem.SharedMem import Servos
+
 
 class ServoWriter(RBModule):
     # Updates the servo values in the shared memory
@@ -15,9 +17,9 @@ class ServoWriter(RBModule):
         logging.info("Initializing ServoWriter")
 
     def step(self, shared_mem: SharedMem) -> SharedMem:
-        shared_mem.servo_vals.values[0] = self.left_val
-        shared_mem.servo_vals.values[1] = self.right_val
-        shared_mem.servo_vals.values[2] = self.top_val
+        shared_mem.servo_vals.values[Servos.LEFT] = self.left_val
+        shared_mem.servo_vals.values[Servos.RIGHT] = self.right_val
+        shared_mem.servo_vals.values[Servos.CAMERA] = self.top_val
         shared_mem.servo_vals.last_update = datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")
 
         return shared_mem

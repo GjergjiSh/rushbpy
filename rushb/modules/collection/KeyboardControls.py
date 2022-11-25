@@ -3,6 +3,7 @@ import logging
 import datetime
 
 from rushb.modules.RBModule import *
+from rushb.sharedmem.SharedMem import Servos
 
 
 class KeyboardControls(RBModule):
@@ -81,8 +82,8 @@ class KeyboardControls(RBModule):
         self.right_track = max(0, min(self.right_track, 180))
 
         # Update the servo values in the shared memory
-        shared_mem.servo_vals.values[0] = self.left_track
-        shared_mem.servo_vals.values[1] = self.right_track
+        shared_mem.servo_vals.values[Servos.LEFT] = self.left_track
+        shared_mem.servo_vals.values[Servos.RIGHT] = self.right_track
 
         # Update the last update time
         shared_mem.servo_vals.last_update = datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")

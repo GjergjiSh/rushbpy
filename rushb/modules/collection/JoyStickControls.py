@@ -4,6 +4,7 @@ import datetime
 from os import environ
 
 from rushb.modules.RBModule import *
+from rushb.sharedmem.SharedMem import Servos
 
 environ['PYGAME_HIDE_SUPPORT_PROMPT'] = '1'
 import pygame
@@ -33,8 +34,8 @@ class JoyStickControls(RBModule):
 
     def step(self, shared_mem: SharedMem) -> SharedMem:
         self.get_gamepad_input()
-        shared_mem.servo_vals.values[0] = int(self.left_stick)
-        shared_mem.servo_vals.values[1] = int(self.right_stick)
+        shared_mem.servo_vals.values[Servos.LEFT] = int(self.left_stick)
+        shared_mem.servo_vals.values[Servos.RIGHT] = int(self.right_stick)
         shared_mem.servo_vals.last_update = datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")
 
         return shared_mem
