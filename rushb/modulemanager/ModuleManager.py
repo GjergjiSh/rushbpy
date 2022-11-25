@@ -16,9 +16,9 @@ class ModuleManger:
     def init(self) -> bool:
         """ Parse the configuration file and initialize the modules """
         try:
-            config = self.__read_config()
-            self.__init_connection(config)
-            self.__assign_modules(config)
+            config = self.read_config()
+            self.init_connection(config)
+            self.assign_modules(config)
             for module in self.modules:
                 module.init()
         except RuntimeError:
@@ -42,7 +42,7 @@ class ModuleManger:
         """ Start processing the modules in a loop """
         try:
             while True:
-                self.__step()
+                self.update_shared_mem()
         except KeyboardInterrupt:
             logging.info("Exiting...")
             return True
@@ -50,7 +50,7 @@ class ModuleManger:
             logging.critical("Failed to run module", exc_info=True)
             return False
 
-    def __read_config(self):
+    def read_config(self):
         """ Read the module parameters from the configuration file """
         try:
             with open(self.cfg_path, "r") as stream:
@@ -60,7 +60,7 @@ class ModuleManger:
         except FileNotFoundError:
             logging.critical("Configuration file not found", exc_info=True)
 
-    def __assign_modules(self, config: dict):
+    def assign_modules(self, config: dict):
         """ Assign a module to the manager """
         try:
             for module in config["Modules"]:
@@ -74,33 +74,23 @@ class ModuleManger:
         except RuntimeError:
             logging.critical("Module assignment failed", exc_info=True)
 
-    def __step(self) -> None:
+    def update_shared_mem(self) -> None:
         """ Read the data from the connection process it and send it back """
 
         # Receive the shared memory from the remote publisher
         if self.connection.subscriber is not None:
             self.shared_mem = self.connection.recv()
 
-        # Pass the shared memory to the modules and
-        # trigger the step function
+        # Pass the shared memory to the modules
+        # and trigger the step function
         for module in self.modules:
-            self.__push_sm(module)
-            module.step()
-            self.__pull_sm(module)
+            self.shared_mem = module.step(self.shared_mem)
 
         # Send the shared memory to the remote subscriber
         if self.connection.publisher is not None:
             self.connection.send(self.shared_mem)
 
-    def __push_sm(self, module: RBModule) -> None:
-        """update the module's shared memory"""
-        module.shared_mem = self.shared_mem
-
-    def __pull_sm(self, module: RBModule) -> None:
-        """update the manager's shared memory"""
-        self.shared_mem = module.shared_mem
-
-    def __init_connection(self, config: dict) -> None:
+    def init_connection(self, config: dict) -> None:
         """ Initialize the publisher and subscriber """
         self.connection = Connection(**config["Connection"])
         try:

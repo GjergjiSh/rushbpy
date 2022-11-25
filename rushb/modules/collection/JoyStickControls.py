@@ -8,6 +8,7 @@ from rushb.modules.RBModule import *
 environ['PYGAME_HIDE_SUPPORT_PROMPT'] = '1'
 import pygame
 
+
 class JoyStickControls(RBModule):
     def __init__(self, **kwargs) -> None:
         self.joystick_id = kwargs.get("joystick_id")
@@ -30,11 +31,13 @@ class JoyStickControls(RBModule):
         except pygame.error:
             raise RuntimeError("Could not initialize joystick")
 
-    def step(self) -> None:
-        self.__get_gamepad_input()
-        self.shared_mem.servo_vals.values[0] = int(self.left_stick)
-        self.shared_mem.servo_vals.values[1] = int(self.right_stick)
-        self.shared_mem.servo_vals.last_update = datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+    def step(self, shared_mem: SharedMem) -> SharedMem:
+        self.get_gamepad_input()
+        shared_mem.servo_vals.values[0] = int(self.left_stick)
+        shared_mem.servo_vals.values[1] = int(self.right_stick)
+        shared_mem.servo_vals.last_update = datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+
+        return shared_mem
 
     def deinit(self) -> None:
         # Release the joystick and pygame
@@ -45,7 +48,7 @@ class JoyStickControls(RBModule):
         except pygame.error:
             raise RuntimeError("Could not deinitialize joystick")
 
-    def __get_gamepad_input(self) -> None:
+    def get_gamepad_input(self) -> None:
         # Read the event queue
         try:
             pygame.event.get()

@@ -41,12 +41,12 @@ class Connection:
         # depending on the connection type
         logging.info(f"Initializing connection of type {self.connection_type}")
         if self.connection_type == ConnectionType.PUB:
-            self.__init_pub()
+            self.init_pub()
         elif self.connection_type == ConnectionType.SUB:
-            self.__init_sub()
+            self.init_sub()
         elif self.connection_type == ConnectionType.PUBSUB:
-            self.__init_pub()
-            self.__init_sub()
+            self.init_pub()
+            self.init_sub()
         else:
             raise ValueError(f"Unknown connection type: {self.connection_type}")
 
@@ -84,7 +84,7 @@ class Connection:
             logging.error(f"Could not deinit connection: {e}")
             raise e
 
-    def __init_pub(self):
+    def init_pub(self):
         # Check if the port is not None
         if self.pub_port is None:
             raise ValueError("The pub_port cannot be None")
@@ -99,7 +99,7 @@ class Connection:
             logging.error(f"Could not bind the publisher to {end_point}: {e}")
             raise e
 
-    def __init_sub(self):
+    def init_sub(self):
         # Check if the port and host are not None
         if self.sub_port is None:
             raise ValueError("The sub_port cannot be None")

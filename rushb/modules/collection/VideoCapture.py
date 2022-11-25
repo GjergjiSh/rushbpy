@@ -25,13 +25,14 @@ class VideoCapture(RBModule):
             logging.error(f"Error while initializing the video capture: {e}")
             raise e
 
-    def step(self) -> None:
+    def step(self, shared_mem: SharedMem) -> SharedMem:
         """Writes the video frame to the shared memory"""
         ret, frame = self.video_capture.read()
         if not ret:
             raise RuntimeError("Failed to capture frame")
 
-        self.shared_mem.video_frame = frame
+        shared_mem.video_frame = frame
+        return shared_mem
 
     def deinit(self) -> None:
         # Release the video capture

@@ -4,14 +4,12 @@ from rushb.sharedmem.SharedMem import SharedMem
 
 
 class RBModule(ABC):
-    shared_mem = SharedMem()
-
     @abstractmethod
     def init(self) -> None:
         raise NotImplementedError()
 
     @abstractmethod
-    def step(self) -> None:
+    def step(self, shared_mem: SharedMem) -> SharedMem:
         raise NotImplementedError()
 
     @abstractmethod

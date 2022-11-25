@@ -36,14 +36,14 @@ class KeyboardControls(RBModule):
         logging.info(f"KeyboardControls x speed: {self.x_speed} y speed: {self.y_speed}")
         logging.info(f"Keyboard button mapping: {self.button_mapping}")
 
-    def step(self) -> None:
-        self.__get_keyboard_input()
-        self.__update_servo_values()
+    def step(self, shared_mem: SharedMem) -> SharedMem:
+        self.get_keyboard_input()
+        return self.update_servo_values(shared_mem)
 
     def deinit(self) -> None:
         logging.info("Deinitializing KeyboardControls")
 
-    def __get_keyboard_input(self) -> None:
+    def get_keyboard_input(self) -> None:
         """"Get the pressed key with the keyboard module and update the directional values"""
 
         # up pressed
@@ -71,7 +71,7 @@ class KeyboardControls(RBModule):
         # Log the directional values
         # logging.debug(f"KeyboardControls directional values: {self.directional_values}")
 
-    def __update_servo_values(self) -> None:
+    def update_servo_values(self, shared_mem: SharedMem) -> SharedMem:
         """"Calculate the position of the servos based on the directional values
             and update the servo values in the shared memory"""
 
@@ -81,8 +81,10 @@ class KeyboardControls(RBModule):
         self.right_track = max(0, min(self.right_track, 180))
 
         # Update the servo values in the shared memory
-        self.shared_mem.servo_vals.values[0] = self.left_track
-        self.shared_mem.servo_vals.values[1] = self.right_track
+        shared_mem.servo_vals.values[0] = self.left_track
+        shared_mem.servo_vals.values[1] = self.right_track
 
         # Update the last update time
-        self.shared_mem.servo_vals.last_update = datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+        shared_mem.servo_vals.last_update = datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+
+        return shared_mem

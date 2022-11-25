@@ -26,9 +26,9 @@ class VideoViewer(RBModule):
             logging.error(f"Error while initializing the video viewer: {e}")
             raise e
 
-    def step(self) -> None:
+    def step(self, shared_mem: SharedMem) -> SharedMem:
         # Get the video frame from the shared memory
-        frame = self.shared_mem.video_frame
+        frame = shared_mem.video_frame
 
         # Check if the frame is empty
         if frame is None:
@@ -38,6 +38,8 @@ class VideoViewer(RBModule):
         # Show the frame
         cv2.imshow("Video", frame)
         cv2.waitKey(1)
+
+        return shared_mem
 
     def deinit(self) -> None:
         # Close the display window

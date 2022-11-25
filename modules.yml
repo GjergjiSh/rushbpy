@@ -30,7 +30,7 @@ Modules:
     joystick_id : 0
 
   - name: VideoCapture
-    active: false
+    active: true
     camera_id : 0
 
   - name: ObjectDetector
@@ -43,7 +43,7 @@ Modules:
     max_detections: 50
 
   - name: VideoViewer
-    active: false
+    active: true
     height: 480
     width : 640
 

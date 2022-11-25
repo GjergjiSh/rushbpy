@@ -14,11 +14,13 @@ class ServoWriter(RBModule):
     def init(self) -> None:
         logging.info("Initializing ServoWriter")
 
-    def step(self) -> None:
-        self.shared_mem.servo_vals.values[0] = self.left_val
-        self.shared_mem.servo_vals.values[1] = self.right_val
-        self.shared_mem.servo_vals.values[2] = self.top_val
-        self.shared_mem.servo_vals.last_update = datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+    def step(self, shared_mem: SharedMem) -> SharedMem:
+        shared_mem.servo_vals.values[0] = self.left_val
+        shared_mem.servo_vals.values[1] = self.right_val
+        shared_mem.servo_vals.values[2] = self.top_val
+        shared_mem.servo_vals.last_update = datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+
+        return shared_mem
 
     def deinit(self) -> None:
         logging.info("Deinitializing ServoWriter")

@@ -11,8 +11,9 @@ class ServoReader(RBModule):
     def init(self) -> None:
         logging.info("Initializing ServoReader")
 
-    def step(self) -> None:
-        logging.debug(f"Servo values {self.shared_mem.servo_vals.values} {self.shared_mem.servo_vals.last_update}")
+    def step(self, shared_mem: SharedMem) -> None:
+        logging.debug(f"Servo values {shared_mem.servo_vals.values} {shared_mem.servo_vals.last_update}")
+        return shared_mem
 
     def deinit(self) -> None:
         logging.info("Deinitializing ServoReader")

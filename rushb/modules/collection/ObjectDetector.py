@@ -33,8 +33,9 @@ class ObjectDetector(RBModule):
         self.download_model()
         self.load_model()
 
-    def step(self) -> None:
-        self.shared_mem.video_frame = self.predict(self.shared_mem.video_frame)
+    def step(self, shared_mem: SharedMem) -> SharedMem:
+        shared_mem.video_frame = self.predict(shared_mem.video_frame)
+        return shared_mem
 
     def deinit(self) -> None:
         pass
@@ -107,13 +108,13 @@ class ObjectDetector(RBModule):
     def predict(self, image):
         """Predicts the objects in the image using the model"""
 
-        all_predictions, class_indexes, class_scores = self.__feed_forward_image(image)
-        confident_predictions = self.__nms(all_predictions, class_scores)
-        image = self.__draw_bounding_boxes(all_predictions, confident_predictions,
+        all_predictions, class_indexes, class_scores = self.feed_forward_image(image)
+        confident_predictions = self.nms(all_predictions, class_scores)
+        image = self.draw_bounding_boxes(all_predictions, confident_predictions,
                                            class_scores, class_indexes, image)
         return image
 
-    def __feed_forward_image(self, image) -> tuple[Any, Any, Any]:
+    def feed_forward_image(self, image) -> tuple[Any, Any, Any]:
         """Feed the frame to the model and get the predictions"""
 
         try:
@@ -136,7 +137,7 @@ class ObjectDetector(RBModule):
         logging.debug(f"Detection count: {len(bounding_boxes)}")
         return bounding_boxes, class_indexes, class_scores
 
-    def __nms(self, bounding_boxes, class_scores):
+    def nms(self, bounding_boxes, class_scores):
         """Non-maximum suppression to remove overlapping bounding boxes"""
 
         # Check if the max detections is not None
@@ -164,7 +165,7 @@ class ObjectDetector(RBModule):
 
         return confident_predictions
 
-    def __draw_bounding_boxes(self, all_predictions, confident_predictions,
+    def draw_bounding_boxes(self, all_predictions, confident_predictions,
                               class_scores, class_indexes, image):
         """Draw bounding boxes of the confident predictions on the image"""
 
