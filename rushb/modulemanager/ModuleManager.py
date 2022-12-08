@@ -69,8 +69,7 @@ class ModuleManger:
                     module_name = module["name"]
                     # Create and assign the module
                     logging.info(f"Assigning module {module_name}")
-                    module = make_module(module_name, **module)
-                    self.modules.append(module)
+                    self.modules.append(make_module(module_name, **module))
         except RuntimeError:
             logging.critical("Module assignment failed", exc_info=True)
 

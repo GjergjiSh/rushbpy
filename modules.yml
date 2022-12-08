@@ -8,16 +8,16 @@ Connection:
 
 Modules:
   - name: ServoWriter
-    active: true
+    active: false
     left_val: 1
     right_val: 2
     top_val: 3
 
   - name: ServoReader
-    active: true
+    active: false
 
   - name: KeyboardControls
-    active: true
+    active: false
     up: w
     down: s
     left: a
@@ -30,7 +30,7 @@ Modules:
     joystick_id : 0
 
   - name: VideoCapture
-    active: true
+    active: false
     camera_id : 0
 
   - name: ObjectDetector
@@ -43,9 +43,14 @@ Modules:
     max_detections: 50
 
   - name: VideoViewer
-    active: true
+    active: false
     height: 480
     width : 640
+
+  - name: SerialWriter
+    active: true
+    port: COM3
+    baudrate: 9600
 
 
 

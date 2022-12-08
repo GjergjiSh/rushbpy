@@ -6,6 +6,7 @@ from rushb.modules.collection.VideoViewer import VideoViewer
 from rushb.modules.collection.VideoCapture import VideoCapture
 from rushb.modules.collection.ObjectDetector import ObjectDetector
 from rushb.modules.collection.JoyStickControls import JoyStickControls
+from rushb.modules.collection.SerialWriter import SerialWriter
 
 from abc import ABC, abstractmethod
 
@@ -60,6 +61,12 @@ class JoyStickControllerFactory(ModuleFactory):
         return JoyStickControls(**kwargs)
 
 
+class SerialWriterFactory(ModuleFactory):
+    def create_module(self, **kwargs) -> RBModule:
+        """ Create a SerialWriter module """
+        return SerialWriter(**kwargs)
+
+
 def make_module(module_type: str, **kwargs) -> RBModule:
     """ Create a module based on the module type and assign parameters """
     factories: dict[str, ModuleFactory] = {
@@ -69,7 +76,8 @@ def make_module(module_type: str, **kwargs) -> RBModule:
         "VideoViewer": VideoViewerFactory(),
         "VideoCapture": VideoCaptureFactory(),
         "ObjectDetector": ObjectDetectorFactory(),
-        "JoyStickControls": JoyStickControllerFactory()
+        "JoyStickControls": JoyStickControllerFactory(),
+        "SerialWriter": SerialWriterFactory()
     }
 
     if module_type in factories:
