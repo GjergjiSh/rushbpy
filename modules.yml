@@ -1,4 +1,3 @@
-
 Connection:
   # connection_type: PUB, SUB, PUBSUB
   connection_type: PUB
@@ -7,16 +6,19 @@ Connection:
   sub_host: localhost
 
 Modules:
-  - name: ServoWriter
+  - module_name: debug
+    module_class: ServoWriter
     active: false
     left_val: 1
     right_val: 2
     top_val: 3
 
-  - name: ServoReader
+  - module_name: debug
+    module_class: ServoReader
     active: false
 
-  - name: KeyboardControls
+  - module_name: driving_controls
+    module_class: KeyboardControls
     active: false
     up: w
     down: s
@@ -25,15 +27,18 @@ Modules:
     x_speed: 0.01
     y_speed: 0.01
 
-  - name: JoyStickControls
+  - module_name: driving_controls
+    module_class: JoyStickControls
     active: false
-    joystick_id : 0
+    joystick_id: 0
 
-  - name: VideoCapture
-    active: false
-    camera_id : 0
+  - module_name: video
+    module_class: VideoCapture
+    active: true
+    camera_id: 0
 
-  - name: ObjectDetector
+  - module_name: object_detector
+    module_class: ObjectDetector
     active: false
     model_url: "http://download.tensorflow.org/models/object_detection/tf2/20200711/ssd_mobilenet_v2_fpnlite_320x320_coco17_tpu-8.tar.gz"
     labels_path: "E:/Repos/Steinbeis/AI/Detection-Models/coco.names"
@@ -42,13 +47,15 @@ Modules:
     confidence_threshold: 0.5
     max_detections: 50
 
-  - name: VideoViewer
-    active: false
-    height: 480
-    width : 640
-
-  - name: SerialWriter
+  - module_name: video
+    module_class: VideoViewer
     active: true
+    height: 480
+    width: 640
+
+  - module_name: serial
+    module_class: SerialWriter
+    active: false
     port: COM3
     baudrate: 9600
 

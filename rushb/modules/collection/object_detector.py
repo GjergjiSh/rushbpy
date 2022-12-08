@@ -7,7 +7,7 @@ import os
 import tensorflow as tf
 from tensorflow.python.keras.utils.data_utils import get_file
 
-from rushb.modules.RBModule import *
+from rushb.modules.rb_module import *
 
 
 class ObjectDetector(RBModule):

@@ -2,8 +2,8 @@ import serial
 import logging
 from io import TextIOWrapper, BufferedRWPair
 
-from rushb.modules.RBModule import *
-from rushb.sharedmem.SharedMem import ServoVals, Servos
+from rushb.modules.rb_module import *
+from rushb.sharedmem.shared_mem import ServoVals, Servos
 
 
 class SerialWriter(RBModule):

@@ -1,4 +1,4 @@
-from rushb.modulemanager.ModuleManager import ModuleManger
+from rushb.modulemanager.module_manager import ModuleManger
 
 import argparse
 import os
