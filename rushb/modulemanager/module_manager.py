@@ -6,11 +6,15 @@ import logging
 
 
 class ModuleManger:
+    cfg_path: str
+    modules: list[RBModule]
+    shared_mem: SharedMem
+    connection: Connection
+
     def __init__(self, cfg_path: str) -> None:
         self.cfg_path: str = cfg_path
         self.modules: list[RBModule] = []
         self.shared_mem: SharedMem = SharedMem()
-        self.connection: Connection = None
 
     def init(self) -> bool:
         """ Parse the configuration file and initialize the modules """
@@ -18,13 +22,16 @@ class ModuleManger:
             config = self.read_config()
             self.init_connection(config)
             self.assign_modules(config)
-            for module in self.modules:
-                module.init()
+            self.init_modules()
         except RuntimeError:
-            logging.critical("Module initialization failed", exc_info=True)
+            logging.critical("Module manager initialization failed", exc_info=True)
             return False
 
         return True
+
+    def init_modules(self):
+        for module in self.modules:
+            module.init()
 
     def deinit(self) -> bool:
         """ Deinitialize all the assigned modules """

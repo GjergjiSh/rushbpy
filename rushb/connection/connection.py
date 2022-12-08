@@ -12,17 +12,20 @@ class ConnectionType(Enum):
 
 
 class Connection:
+    context: zmq.Context
+    publisher: zmq.Socket
+    subscriber: zmq.Socket
+
+    connection_type: ConnectionType
+    pub_port: str
+    sub_port: str
+    sub_host: str
+
     def __init__(self, **kwargs):
         self.connection_type: ConnectionType = ConnectionType[kwargs.get("connection_type")]
         self.pub_port: str = kwargs.get("pub_port")
         self.sub_port: str = kwargs.get("sub_port")
         self.sub_host: str = kwargs.get("sub_host")
-
-        # Connection objects are not initialized until
-        # the init_connection method is called
-        self.context: zmq.Context = None
-        self.publisher: zmq.Socket = None
-        self.subscriber: zmq.Socket = None
 
     def init(self):
         """Initialize the connection"""

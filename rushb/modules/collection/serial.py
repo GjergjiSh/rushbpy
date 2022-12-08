@@ -9,9 +9,12 @@ from rushb.sharedmem.shared_mem import ServoVals, Servos
 class SerialWriter(RBModule):
     """SerialWriter is a class that writes the servo values to the serial port"""
 
+    serial_port: serial.Serial
+    sio: TextIOWrapper
+    port: str
+    baudrate: int
+
     def __init__(self, **kwargs) -> None:
-        self.serial_port = None
-        self.sio = None
         self.port = kwargs.get("port")
         self.baudrate = kwargs.get("baudrate")
 
@@ -21,11 +24,15 @@ class SerialWriter(RBModule):
 
         # Check if the serial port name and baudrate are not None
         if self.port is None or self.baudrate is None:
-            raise ValueError("The port and baudrate cannot be None")
+            raise ValueError("The port name has not been set")
+
+        # Check if the baudrate is None
+        if self.baudrate is None:
+            raise ValueError("The baudrate has not been set")
 
         try:
             self.serial_port = serial.Serial(self.port, self.baudrate, timeout=1)
-            self.sio: TextIOWrapper = TextIOWrapper(BufferedRWPair(self.serial_port, self.serial_port))
+            self.sio = TextIOWrapper(BufferedRWPair(self.serial_port, self.serial_port))
         except Exception as e:
             logging.error(f"Error while initializing the serial port: {e}")
             raise e
@@ -48,7 +55,7 @@ class SerialWriter(RBModule):
         logging.info("Deinitializing SerialWriter")
         try:
             # TODO FIXME
-            #self.sio.close()
+            # self.sio.close()
             self.serial_port.close()
         except Exception as e:
             logging.error(f"Error while deinitializing the serial port: {e}")

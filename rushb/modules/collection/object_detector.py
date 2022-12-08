@@ -13,6 +13,18 @@ from rushb.modules.rb_module import *
 class ObjectDetector(RBModule):
     """ObjectDetector is a class that detects objects in an image using a pre-trained model."""
 
+    model_url: str
+    labels_path: str
+    cache_dir: str
+    iou_threshold: float
+    confidence_threshold: float
+    max_detections: int
+    class_names: list[str]
+    class_colors: list[tuple[int, int, int]]
+
+    model_name: str
+    detection_model: tf.saved_model.load
+
     def __init__(self, **kwargs) -> None:
         self.model_url = kwargs.get("model_url")
         self.labels_path = kwargs.get("labels_path")
@@ -20,12 +32,6 @@ class ObjectDetector(RBModule):
         self.iou_threshold = kwargs.get("iou_threshold")
         self.confidence_threshold = kwargs.get("confidence_threshold")
         self.max_detections = kwargs.get("max_detections")
-
-        self.class_names = []
-        self.class_colors = []
-
-        self.model_name = None
-        self.detection_model = None
 
     def init(self) -> None:
         logging.info("Initializing ObjectDetector")
@@ -51,6 +57,9 @@ class ObjectDetector(RBModule):
         # Check if the labels file exists
         if not os.path.exists(self.labels_path):
             raise FileNotFoundError(f"Labels file not found at {self.labels_path}")
+
+        self.class_names = []
+        self.class_colors = []
 
         try:
             logging.info(f"Reading classes from {self.labels_path}")

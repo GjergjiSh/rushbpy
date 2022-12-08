@@ -1,5 +1,5 @@
 import cv2
-import logging
+
 from rushb.modules.rb_module import *
 
 
@@ -7,8 +7,10 @@ class VideoCapture(RBModule):
     """VideoCapture is a class that captures the video feed from the webcam
      and writes it to the shared memory"""
 
+    video_capture: cv2.VideoCapture
+    camera_id: int
+
     def __init__(self, **kwargs) -> None:
-        self.video_capture = None
         self.camera_id = kwargs.get("camera_id")
 
     def init(self) -> None:

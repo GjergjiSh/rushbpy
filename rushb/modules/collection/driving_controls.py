@@ -68,6 +68,12 @@ class JoyStickControls(RBModule):
 class KeyboardControls(RBModule):
     """KeyboardControls is a module that controls the servos using the keyboard"""
 
+    button_mapping: dict[str, str]
+    x_speed: float
+    y_speed: float
+    right_track: float
+    left_track: float
+
     def __init__(self, **kwargs) -> None:
         self.button_mapping: dict[str, str] = {
             "up": kwargs.get("up"),
