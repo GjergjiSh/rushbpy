@@ -1,6 +1,5 @@
-from rushb.modules.RBModule import *
-from rushb.modules.factory.ModuleFactory import make_module
-from rushb.connection.Connection import *
+from rushb.modules.rb_module import *
+from rushb.connection.connection import *
 
 import yaml
 import logging
@@ -58,7 +57,7 @@ class ModuleManger:
                 yaml_file = yaml.safe_load(stream)
                 return yaml_file
         except FileNotFoundError:
-            logging.critical("Configuration file not found", exc_info=True)
+            logging.error("Configuration file not found", exc_info=True)
 
     def assign_modules(self, config: dict):
         """ Assign a module to the manager """
@@ -66,13 +65,12 @@ class ModuleManger:
             for module in config["Modules"]:
                 # Get the module name to pass to the factory
                 if module["active"]:
-                    module_name = module["name"]
+                    module_name = module["module_name"]
                     # Create and assign the module
                     logging.info(f"Assigning module {module_name}")
-                    module = make_module(module_name, **module)
-                    self.modules.append(module)
+                    self.modules.append(create_module(**module))
         except RuntimeError:
-            logging.critical("Module assignment failed", exc_info=True)
+            logging.error("Module assignment failed", exc_info=True)
 
     def update_shared_mem(self) -> None:
         """ Read the data from the connection process it and send it back """
@@ -96,4 +94,4 @@ class ModuleManger:
         try:
             self.connection.init()
         except RuntimeError:
-            logging.critical("Connection initialization failed", exc_info=True)
+            logging.error("Connection initialization failed", exc_info=True)

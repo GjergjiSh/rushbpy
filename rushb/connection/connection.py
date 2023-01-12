@@ -2,7 +2,7 @@ import zmq
 import logging
 
 from enum import Enum
-from rushb.sharedmem.SharedMem import *
+from rushb.sharedmem.shared_mem import *
 
 
 class ConnectionType(Enum):
